@@ -1,0 +1,664 @@
+<html><head><base href=".">
+<title>Enhanced Idle Game Creator Studio</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: #fff;
+    }
+    .creator-container {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        gap: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .creator-panel {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 25px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .preview-panel {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 25px;
+        border-radius: 15px;
+        min-height: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .input-group {
+        margin: 15px 0;
+    }
+    .section-title {
+        border-bottom: 2px solid rgba(255,255,255,0.1);
+        padding-bottom: 10px;
+        margin: 20px 0;
+        color: #4CAF50;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #fff;
+        font-weight: 500;
+    }
+    input, select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+        transition: all 0.3s;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 2px rgba(76,175,80,0.2);
+    }
+    button {
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 10px 5px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        font-weight: bold;
+    }
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+    }
+    .resource {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 12px;
+        font-size: 1.2em;
+    }
+    .theme-select {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 10px 0;
+    }
+    .theme-option {
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .theme-option:hover {
+        transform: scale(1.05);
+    }
+    #gamePreview {
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+    .preview-resource {
+        font-size: 2em;
+        margin: 20px 0;
+    }
+    .preview-buttons {
+        display: grid;
+        gap: 10px;
+        width: 80%;
+        max-width: 400px;
+    }
+    .stats-panel {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+        width: 80%;
+    }
+    .stat-box {
+        background: rgba(255,255,255,0.05);
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .giant-resource {
+        font-size: 8em;
+        cursor: pointer;
+        transition: transform 0.1s;
+        user-select: none;
+        display: inline-block;
+    }
+
+    .giant-resource:active {
+        transform: scale(0.95);
+    }
+
+    .upgrade-entry {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+
+    .remove-btn {
+        padding: 5px 10px;
+        background: #ff4444;
+        margin-top: 10px;
+    }
+
+    .upgrade-button {
+        width: 100%;
+        margin: 5px 0;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .upgrade-button span {
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+    
+    /* Add styles for resource image */
+    .giant-resource img {
+        width: 128px;
+        height: 128px;
+        object-fit: contain;
+    }
+</style>
+</head>
+<body>
+    <div class="creator-container">
+        <div class="creator-panel">
+            <h1>IGC Studio</h1>
+            
+            <h3 class="section-title">Basic Settings</h3>
+            <div class="input-group">
+                <label>Game Title:</label>
+                <input type="text" id="gameTitle" value="My Epic Idle Adventure">
+            </div>
+            
+            <div class="input-group">
+                <label>Icon Type:</label>
+                <select id="iconType" onchange="toggleIconInput()">
+                    <option value="emoji">Emoji</option>
+                    <option value="image">Image URL</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="emojiInput">
+                <label>Resource Emoji:</label>
+                <input type="text" id="resourceEmoji" value="&#x1f48e;">
+            </div>
+
+            <div class="input-group" id="imageInput" style="display:none;">
+                <label>Resource Image URL:</label>
+                <input type="text" id="resourceImageUrl" value="https://example.com/crystal.png">
+            </div>
+            
+            <div class="input-group">
+                <label>Resource Name:</label>
+                <input type="text" id="resourceName" value="Crystals">
+            </div>
+            
+            <h3 class="section-title">Visual Customization</h3>
+            <div class="input-group">
+                <label>Primary Color:</label>
+                <input type="color" id="resourceColor" value="#4CAF50">
+            </div>
+            
+            <div class="input-group">
+                <label>Background Theme:</label>
+                <select id="backgroundTheme">
+                    <option value="dark">Dark Space</option>
+                    <option value="forest">Mystical Forest</option>
+                    <option value="cyber">Cyberpunk</option>
+                </select>
+            </div>
+            
+            <h3 class="section-title">Game Balance</h3>
+            <div class="input-group">
+                <label>Default Upgrade Type:</label>
+                <select id="defaultUpgradeType">
+                    <option value="cpc">Clicks Per Click (CPC)</option>
+                    <option value="cps">Clicks Per Second (CPS)</option>
+                </select>
+            </div>
+
+            <h3 class="section-title">Upgrades</h3>
+            <div id="upgradesList">
+                <div class="upgrade-entry">
+                    <div class="input-group">
+                        <label>Upgrade Name:</label>
+                        <input type="text" class="upgrade-name" value="Double Click">
+                        <label>Upgrade Type:</label>
+                        <select class="upgrade-type">
+                            <option value="cpc">Clicks Per Click (CPC)</option>
+                            <option value="cps">Clicks Per Second (CPS)</option>
+                        </select>
+                        <label>Base Cost:</label>
+                        <input type="number" class="upgrade-cost" value="50">
+                        <label>Multiplier:</label>
+                        <input type="number" class="upgrade-multiplier" value="2" step="0.1">
+                        <button onclick="removeUpgrade(this)" class="remove-btn">❌</button>
+                    </div>
+                </div>
+                <div class="upgrade-entry">
+                    <div class="input-group">
+                        <label>Upgrade Name:</label>
+                        <input type="text" class="upgrade-name" value="Triple Click">
+                        <label>Upgrade Type:</label>
+                        <select class="upgrade-type">
+                            <option value="cpc">Clicks Per Click (CPC)</option>
+                            <option value="cps">Clicks Per Second (CPS)</option>
+                        </select>
+                        <label>Base Cost:</label>
+                        <input type="number" class="upgrade-cost" value="100">
+                        <label>Multiplier:</label>
+                        <input type="number" class="upgrade-multiplier" value="3" step="0.1">
+                        <button onclick="removeUpgrade(this)" class="remove-btn">❌</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="addUpgrade()" id="addUpgradeBtn">+ Add Upgrade</button>
+            
+            <button onclick="compileGame()">&#x25b6;&#xfe0f; Preview Game</button>
+            <button onclick="downloadGame()">&#x1f4be; Download Game</button>
+        </div>
+        
+        <div class="preview-panel" id="gamePreview">
+            <h2 id="previewTitle">Game Preview</h2>
+            <div class="preview-resource">
+                <span id="previewResourceCount">0</span> <span id="previewResourceName"></span>
+            </div>
+            <div class="preview-buttons">
+                <div class="giant-resource" onclick="clickResource()">
+                    <img id="resourceImage" src alt="Resource Image" style="display:none;">
+                </div>
+                <button id="buyGenerator" onclick="buyGenerator()" class="generator-button">
+                    Buy Generator (10)
+                </button>
+                <div id="upgradeButtons"></div>
+            </div>
+            <div class="stats-panel">
+                <div class="stat-box">
+                    Generators: <span id="generatorCount">0</span>
+                </div>
+                <div class="stat-box">
+                    Per Second: <span id="perSecond">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+function toggleIconInput() {
+    const iconType = document.getElementById('iconType').value;
+    const emojiInput = document.getElementById('emojiInput');
+    const imageInput = document.getElementById('imageInput');
+    
+    // Show/hide appropriate input based on selection
+    if (iconType === 'emoji') {
+        emojiInput.style.display = 'block';
+        imageInput.style.display = 'none';
+        
+        // Update resource display
+        const giantResource = document.querySelector('.giant-resource');
+        if (giantResource) {
+            giantResource.innerHTML = document.getElementById('resourceEmoji').value;
+        }
+    } else {
+        emojiInput.style.display = 'none';
+        imageInput.style.display = 'block';
+        
+        // Update resource display
+        const giantResource = document.querySelector('.giant-resource');
+        const imageUrl = document.getElementById('resourceImageUrl').value;
+        if (giantResource) {
+            giantResource.innerHTML = `<img src="${imageUrl}" alt="Resource">`;
+        }
+    }
+}
+
+function removeUpgrade(button) {
+  const upgradeEntry = button.closest('.upgrade-entry');
+  upgradeEntry.remove();
+}
+function addUpgrade() {
+  const upgradesList = document.getElementById('upgradesList');
+  const upgradeCount = upgradesList.children.length;
+  if (upgradeCount >= 12) {
+    alert('Maximum of 12 upgrades allowed!');
+    return;
+  }
+  const defaultType = document.getElementById('defaultUpgradeType').value;
+  const newUpgrade = document.createElement('div');
+  newUpgrade.className = 'upgrade-entry';
+  newUpgrade.innerHTML = `
+        <div class="input-group">
+            <label>Upgrade Name:</label>
+            <input type="text" class="upgrade-name" value="New Upgrade">
+            <label>Upgrade Type:</label>
+            <select class="upgrade-type">
+                <option value="cpc" ${defaultType === 'cpc' ? 'selected' : ''}>Clicks Per Click (CPC)</option>
+                <option value="cps" ${defaultType === 'cps' ? 'selected' : ''}>Clicks Per Second (CPS)</option>
+            </select>
+            <label>Base Cost:</label>
+            <input type="number" class="upgrade-cost" value="100">
+            <label>Multiplier:</label>
+            <input type="number" class="upgrade-multiplier" value="2" step="0.1">
+            <button onclick="removeUpgrade(this)" class="remove-btn">❌</button>
+        </div>
+    `;
+  upgradesList.appendChild(newUpgrade);
+}
+let gameState = {
+  resources: 0,
+  baseClick: 1,
+  cpsMultiplier: 0,
+  upgrades: []
+};
+function compileGame() {
+  const preview = document.getElementById('gamePreview');
+  preview.style.display = 'flex';
+  document.getElementById('previewTitle').textContent = document.getElementById('gameTitle').value;
+  const iconType = document.getElementById('iconType').value;
+  if (iconType === 'emoji') {
+    document.getElementById('previewResourceName').textContent = document.getElementById('resourceEmoji').value + ' ' + document.getElementById('resourceName').value;
+  } else {
+    document.getElementById('previewResourceName').innerHTML = `<img src="${document.getElementById('resourceImageUrl').value}" style="width:32px;height:32px;vertical-align:middle;"> ${document.getElementById('resourceName').value}`;
+  }
+  const theme = document.getElementById('backgroundTheme').value;
+  const previewPanel = document.querySelector('.preview-panel');
+  switch (theme) {
+    case 'forest':
+      previewPanel.style.background = 'linear-gradient(135deg, #1a472a, #2d5a27)';
+      break;
+    case 'cyber':
+      previewPanel.style.background = 'linear-gradient(135deg, #2b1055, #7597de)';
+      break;
+    default:
+      previewPanel.style.background = 'linear-gradient(135deg, #1a1a2e, #16213e)';
+  }
+  document.querySelectorAll('.preview-panel button').forEach(btn => {
+    btn.style.background = document.getElementById('resourceColor').value;
+  });
+  gameState.baseClick = 1; // Set a default value since we don't have a clickValue input
+  let upgrades = [];
+  document.querySelectorAll('.upgrade-entry').forEach((entry, index) => {
+    upgrades.push({
+      name: entry.querySelector('.upgrade-name').value,
+      type: entry.querySelector('.upgrade-type').value,
+      baseCost: parseFloat(entry.querySelector('.upgrade-cost').value),
+      multiplier: parseFloat(entry.querySelector('.upgrade-multiplier').value)
+    });
+  });
+  gameState.upgrades = upgrades.map(upgrade => ({
+    ...upgrade,
+    level: 0,
+    currentCost: upgrade.baseCost
+  }));
+  updateDisplay();
+  startGameLoop();
+}
+function clickResource() {
+  gameState.resources += gameState.baseClick;
+  updateDisplay();
+}
+function buyGenerator() {
+  // This function can be removed or modified as per game design
+}
+function buyUpgrade(index) {
+  const upgrade = gameState.upgrades[index];
+  if (gameState.resources >= upgrade.currentCost) {
+    gameState.resources -= upgrade.currentCost;
+    upgrade.level++;
+    upgrade.currentCost *= 1.5;
+    
+    if (upgrade.type === 'cpc') {
+        gameState.baseClick *= upgrade.multiplier;
+    } else {
+        gameState.cpsMultiplier += upgrade.multiplier;
+    }
+    
+    updateDisplay();
+  }
+}
+function updateDisplay() {
+  document.getElementById('previewResourceCount').textContent = Math.floor(gameState.resources);
+  document.getElementById('perSecond').textContent = gameState.cpsMultiplier.toFixed(1);
+  
+  const upgradeButtons = document.getElementById('upgradeButtons');
+  upgradeButtons.innerHTML = gameState.upgrades.map((upgrade, index) => `
+        <button onclick="buyUpgrade(${index})" class="upgrade-button">
+            ${upgrade.name} [${upgrade.type.toUpperCase()}] (Level ${upgrade.level})
+            <span>Cost: ${Math.floor(upgrade.currentCost)} ${document.getElementById('resourceEmoji').value}</span>
+        </button>
+    `).join('');
+}
+let gameLoop;
+function startGameLoop() {
+  if (gameLoop) clearInterval(gameLoop);
+  gameLoop = setInterval(() => {
+    gameState.resources += gameState.cpsMultiplier / 10;
+    updateDisplay();
+  }, 100);
+}
+function downloadGame() {
+  const gameHTML = generateGameHTML();
+  const blob = new Blob([gameHTML], {
+    type: 'text/html'
+  });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-idle-game.html';
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+function generateGameHTML() {
+  const title = document.getElementById('gameTitle').value;
+  const resourceEmoji = document.getElementById('resourceEmoji').value;
+  const resourceName = document.getElementById('resourceName').value;
+  const resourceColor = document.getElementById('resourceColor').value;
+  const theme = document.getElementById('backgroundTheme').value;
+  const clickValue = 1; // Set a default value for click power
+  const iconType = document.getElementById('iconType').value;
+  const resourceImageUrl = document.getElementById('resourceImageUrl').value;
+  let backgroundStyle = '';
+  switch (theme) {
+    case 'forest':
+      backgroundStyle = 'linear-gradient(135deg, #1a472a, #2d5a27)';
+      break;
+    case 'cyber':
+      backgroundStyle = 'linear-gradient(135deg, #2b1055, #7597de)';
+      break;
+    default:
+      backgroundStyle = 'linear-gradient(135deg, #1a1a2e, #16213e)';
+  }
+  let upgrades = [];
+  document.querySelectorAll('.upgrade-entry').forEach((entry, index) => {
+    upgrades.push({
+      name: entry.querySelector('.upgrade-name').value,
+      type: entry.querySelector('.upgrade-type').value,
+      baseCost: parseFloat(entry.querySelector('.upgrade-cost').value),
+      multiplier: parseFloat(entry.querySelector('.upgrade-multiplier').value)
+    });
+  });
+  return `<!DOCTYPE html>
+<html>
+<head>
+    <title>${title}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: ${backgroundStyle};
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-container {
+            max-width: 800px;
+            width: 90%;
+            margin: 40px auto;
+            text-align: center;
+        }
+        button {
+            background: ${resourceColor};
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 1.1em;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        .resource {
+            font-size: 2.5em;
+            margin: 30px 0;
+        }
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .giant-resource {
+            font-size: 8em;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+            display: inline-block;
+        }
+
+        .giant-resource:active {
+            transform: scale(0.95);
+        }
+
+        .giant-resource img {
+            width: 128px;
+            height: 128px;
+            object-fit: contain;
+        }
+
+        .upgrade-button {
+            width: 100%;
+            margin: 5px 0;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upgrade-button span {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>${title}</h1>
+        <div class="resource">
+            <span id="resourceCount">0</span> 
+            ${iconType === 'emoji' ? resourceEmoji : `<img src="${resourceImageUrl}" alt="Resource" style="width:32px;height:32px;vertical-align:middle;">`} 
+            ${resourceName}
+        </div>
+        <div class="giant-resource" onclick="clickResource()">
+            ${iconType === 'emoji' ? resourceEmoji : `<img src="${resourceImageUrl}" alt="Resource">`}
+        </div>
+        <button id="buyGenerator" onclick="buyGenerator()">Buy Generator (10)</button>
+        <div id="upgradeButtons"></div>
+        <div class="stats-panel">
+            <div class="stat-box">Resources: <span id="resourceCount">0</span></div>
+            <div class="stat-box">Per Second: <span id="perSecond">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            resources: 0,
+            baseClick: ${clickValue},
+            cpsMultiplier: 0,
+            upgrades: []
+        };
+
+        ${upgrades.map((upgrade, index) => `
+            gameState.upgrades.push({
+                name: '${upgrade.name}',
+                type: '${upgrade.type}',
+                baseCost: ${upgrade.baseCost},
+                multiplier: ${upgrade.multiplier},
+                level: 0,
+                currentCost: ${upgrade.baseCost}
+            });
+        `).join('')}
+
+        function clickResource() {
+            gameState.resources += gameState.baseClick;
+            updateDisplay();
+        }
+
+        function buyGenerator() {
+            // This function can be removed or modified as per game design
+        }
+
+        function buyUpgrade(index) {
+            const upgrade = gameState.upgrades[index];
+            if (gameState.resources >= upgrade.currentCost) {
+                gameState.resources -= upgrade.currentCost;
+                upgrade.level++;
+                upgrade.currentCost *= 1.5;
+                
+                if (upgrade.type === 'cpc') {
+                    gameState.baseClick *= upgrade.multiplier;
+                } else {
+                    gameState.cpsMultiplier += upgrade.multiplier;
+                }
+                
+                updateDisplay();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('resourceCount').textContent = Math.floor(gameState.resources);
+            document.getElementById('perSecond').textContent = gameState.cpsMultiplier.toFixed(1);
+            const upgradeButtons = document.getElementById('upgradeButtons');
+            upgradeButtons.innerHTML = gameState.upgrades.map((upgrade, index) => 
+                '<button onclick="buyUpgrade(' + index + ')" class="upgrade-button">' +
+                    upgrade.name + ' [' + upgrade.type.toUpperCase() + '] (Level ' + upgrade.level + ')' +
+                    '<span>Cost: ' + Math.floor(upgrade.currentCost) + ' ${iconType === 'emoji' ? resourceEmoji : `<img src="${resourceImageUrl}" alt="Resource" style="width:16px;height:16px;vertical-align:middle;">`}</span>' +
+                '</button>'
+            ).join('');
+        }
+
+        setInterval(() => {
+            gameState.resources += (gameState.cpsMultiplier) / 10;
+            updateDisplay();
+        }, 100);
+    <\/script>
+</body>
+</html>`;
+}
+</script>
+</body>
+</html>
