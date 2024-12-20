@@ -1,0 +1,147 @@
+<html><head><base href="." /><link rel="icon" href="data:," /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EXTRALARGEBRAIN!?</title>
+<style>
+:root {
+    --primary: #2d333b;
+    --secondary: #22272e;
+    --text: #adbac7;
+    --accent: #539bf5;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--secondary);
+    color: var(--text);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.profile-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 4px solid var(--accent);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 20px rgba(83, 155, 245, 0.3);
+}
+
+.profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(83, 155, 245, 0.5);
+}
+
+.profile-info h1 {
+    margin: 0;
+    color: var(--accent);
+    font-size: 2.5em;
+    text-shadow: 0 0 10px rgba(83, 155, 245, 0.3);
+}
+
+.links-section {
+    margin-top: 30px;
+    display: grid;
+    gap: 15px;
+}
+
+.link-card {
+    background: rgba(83, 155, 245, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.link-card:hover {
+    background: rgba(83, 155, 245, 0.2);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.link-title {
+    color: var(--accent);
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.link-description {
+    color: var(--text);
+    font-size: 0.9em;
+    opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+    .profile {
+        padding: 10px;
+    }
+    
+    .profile-img {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .profile-info h1 {
+        font-size: 2em;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="profile">
+        <img src="https://avatars.githubusercontent.com/u/175792890?v=4" alt="Profile" class="profile-img">
+        <div class="profile-info">
+            <h1>EXTRALARGEBRAIN</h1>
+            <p>Welcome to my homepage, idk what you are doing here but look around and maybe check out my projects.</p>
+        </div>
+    </div>
+
+    <div class="links-section">
+        <script>
+        const links = [
+            {
+                name: "GitHub Profile",
+                url: "https://github.com/extralargebrain",
+                description: "My GitHub profile"
+            },
+            {
+                name: "Idle Game Creator Studio",
+                url: "https://extralargebrain.github.io/idlegamecreator/",
+                description: "Make your own Idle Games with ease!"
+            },
+        ];
+
+        // Render links
+        links.forEach(link => {
+            document.write(`
+                <a href="${link.url}" target="_blank" class="link-card">
+                    <div class="link-title">${link.name}</div>
+                    <div class="link-description">${link.description}</div>
+                </a>
+            `);
+        });
+        </script>
+    </div>
+</div>
+</body></html>
